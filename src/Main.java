@@ -6,20 +6,22 @@ public class Main {
     }
 
     private static void feedCats() {
-        int catsCount = 10;
         Random random = new Random();
-        Plate plate = new Plate(random.nextInt(150), random.nextInt(10) + 7);
+
+        int catsCount = 10;
+        int plateFoodInitialCount = 150;
+        int plateAlmostEmptyLimit = random.nextInt(10) + 7;
+
+        //Инициализируем тарелку
+        Plate plate = new Plate(random.nextInt(plateFoodInitialCount), plateAlmostEmptyLimit);
 
         //Инициализируем котов
-        Cat[] cats = new Cat[catsCount];
-        for(int i = 0; i < catsCount; i++) {
-            cats[i] = new Cat("Cat number " + i, random.nextInt(20));
-        }
+        Cat[] cats = initCats(catsCount, random);
 
         //Кормим котов
         for (Cat c:cats){
-            //Если тарелка пустая - можем досыпать немного корма, а можем и не досыпать
-            checkAndIncreasePlate(random, plate);
+            //Если тарелка пустая - можем досыпать немного корма
+            checkAndIncreaseFood(random, plate);
             //Кормим котов
             feedCat(plate, c);
         }
@@ -27,7 +29,17 @@ public class Main {
         hungryCatList(cats);
     }
 
-    private static void checkAndIncreasePlate(Random random, Plate plate) {
+
+    private static Cat[] initCats(int catsCount, Random random) {
+        Cat[] cats = new Cat[catsCount];
+        for(int i = 0; i < catsCount; i++) {
+            cats[i] = new Cat("Cat number " + (i + 1), random.nextInt(20));
+        }
+        return cats;
+    }
+
+
+    private static void checkAndIncreaseFood(Random random, Plate plate) {
         if (plate.isAlmostEmpty()) {
             System.out.println("The plate is almost empty!");
             if (random.nextBoolean()){
@@ -43,7 +55,7 @@ public class Main {
         if (c.isSatiety()){
             System.out.println(c.getName() + " is already satiety");
         } else {
-            System.out.println(c.getName() + " is try to eat");
+            System.out.println(c.getName() + " is trying to eat");
             if (c.eat(plate)) {
                 System.out.println(c.getName() + " is satiety now");
             } else {
@@ -53,6 +65,7 @@ public class Main {
     }
 
     private static void hungryCatList(Cat[] cats) {
+        System.out.println();
         for (Cat c:cats){
             if (!c.isSatiety()){
                 System.out.printf("unfortunately %s  is still hungry. Try to correct it ASAP!\n", c.getName());
